@@ -6,7 +6,6 @@ class CartManager{
     this.pathProducts = './data/Productos.json'
   }
 
-  //metodo que lee un archivo JSON
   readJsonFile(filePath){
     try {
       const data = fs.readFileSync(filePath)
@@ -16,7 +15,6 @@ class CartManager{
     }
   }
 
-  //metodo que crea un carrito
   createCart(){
     const carts = this.readJsonFile(this.path)
 
@@ -35,7 +33,6 @@ class CartManager{
     console.log(`carrito ${maxId + 1} creado`)
   }
 
-  //muestra un carrito segun su id
   getCart(id){
     const carts = this.readJsonFile(this.path)
     try {
@@ -47,15 +44,11 @@ class CartManager{
   }
 
 
-  //agrega un producto a un carrito en especifico
   addProductToCart(cid, pid){
-    //lee el archivo de productos y verifica que exista
     const products = this.readJsonFile(this.pathProducts)
     const product = products.find(p => p.id === pid)
-    //lee el archivo de carritos y verifica que exista
     const carts = this.readJsonFile(this.path)
     const cart = carts.find(c => c.id === cid)
-    //busca la propiedad productos del carrito y verifica si este ya existe dentro
     const cartProductIndex = cart.productos.findIndex(p => p.product === pid)
 
     try {

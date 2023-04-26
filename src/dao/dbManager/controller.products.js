@@ -7,9 +7,7 @@ const router = Router()
 const privateAccess = require('../../middlewares/privateAccess.middleware')
 
 
-// Utiliza el middleware de acceso privado para verificar que el usuaio este autenticado si no lo redirecciona al login
 router.get('/', privateAccess, async (req, res) => {
-  //Querys para filtrar los productos
   const limit = parseInt(req.query.limit) || 10;
   const page = parseInt(req.query.page) || 1;
   const sort = req.query.sort === 'asc' ? 'price' : req.query.sort === 'desc' ? '-price' : null;
@@ -28,7 +26,7 @@ router.get('/', privateAccess, async (req, res) => {
 
 
   try {
-    //buscar, paginar, filtrar productos
+    // buscar productos y paginarlos
     const products = await Products.paginate(query, {
       limit: limit,
       page: page,
@@ -47,18 +45,17 @@ router.get('/', privateAccess, async (req, res) => {
       ? `http://${req.headers.host}/api/dbProducts?page=${nextPage}&limit=${limit}&sort=${sort}&query=${query}`
       : null;
 
-    // Verificar si hay un usuario autenticado y pasar sus datos a la vista
+    // verificar si el usuario está logueado
     const user = req.session.user;
     const message = user
       ? `Bienvenido ${user.role} ${user.first_name} ${user.last_name}!`
       : null;
 
-    // Buscar el carrito del usuario por el id del usuario
+    // buscar su carrito de compras
     const cart = await Cart.findOne({ userId: user._id });
-    // parsear el objeto con el id del usuario a cadena
     const cartId = cart._id.toString()
 
-    //renderizamos la vista handlebars y pasamos los datos con los que trabajaremos
+    //renderizar la vista
     res.render('products.handlebars', {
       title: 'Lista de Productos',
       cartId: cartId,

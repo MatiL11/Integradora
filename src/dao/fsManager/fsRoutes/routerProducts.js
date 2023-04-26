@@ -3,16 +3,7 @@ const productManager = require('../productManager')
 const router = Router()
 
 
-
-
-/**
- * {HANDLEBARS}
- */
-
-
-
-
-// Muestra todos los productos existentes en el dom con handlebars
+// muestra todos los productos
 router.get('/', (req, res) => {
   const limite = parseInt(req.query.limit)
   try {
@@ -25,7 +16,7 @@ router.get('/', (req, res) => {
 })
 
 
-// Muestra un producto en particular
+// muestra un producto por id
 router.get('/:pid', (req, res) => {
   const productId = parseInt(req.params.pid)
   try {
@@ -37,7 +28,7 @@ router.get('/:pid', (req, res) => {
   }
 })
 
-// Actualiza una o mas propiedades en especifico de un objeto producto
+// actualiza un producto por id
 router.patch('/:pid', (req, res) => {
   const productId = parseInt(req.params.pid)
   const updates = req.body

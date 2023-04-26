@@ -11,12 +11,7 @@ class ProducManager{
     this.path = path
   }
 
-  /**
-   * metodo que agrega un producto con sus respectivosparametros
-   */
-
   addProduct(product) {
-    // valida los datos de cada parametro y los condiciona de forma simple
     const schema = Joi.object({
       nombre: Joi.string().required(),
       descripcion: Joi.string().required(),
@@ -42,7 +37,6 @@ class ProducManager{
     products.push(newProduct)
 
     try {
-      //no estoy utilizando appendFileSync por que agregaria el objeto al final del archivo pórfuera del array de productos creando un error de sintaxis en el json de los porductos
       fs.writeFileSync(this.path, JSON.stringify(products, null, 2))
       console.log(`producto ${id} agregado`)
       return products
@@ -52,10 +46,6 @@ class ProducManager{
     }
   }
 
-
-  /**
-   * metodo que muestra todos los productos  que existen
-   */
   getProducts(limit){
     try {
       const productos = JSON.parse(fs.readFileSync(this.path, 'utf-8'))
@@ -70,9 +60,6 @@ class ProducManager{
     }
   }
 
-  /**
-   * metodo que muestra un producto segun el id definido en la instancia
-   */
   getProductById(id){
     try {
       const producto = JSON.parse(fs.readFileSync(this.path, 'utf8'))
@@ -84,12 +71,8 @@ class ProducManager{
     }
   }
 
-  /**
-   * metodo que actualiza un valor de un producto ej: precio,     descripcion, stock
-   **/
   updateProduct(id, updates){
 
-    // console.log(updates)
     try {
       const data = fs.readFileSync(this.path, 'utf-8')
       const productos = JSON.parse(data)
@@ -113,9 +96,6 @@ class ProducManager{
     }
   }
 
-  /**
-   * metodo que elimina un prodcuto
-   */
   deleteProduct(id){
     try {
       const productos = JSON.parse(fs.readFileSync(this.path, 'utf-8',))
@@ -133,9 +113,6 @@ class ProducManager{
     }
   }
 
-  /**
-   * metodo que elimina todo el archivo de productos
-   */
   deleteAllProducts(){
     try {
       fs.unlinkSync(this.path)
@@ -147,9 +124,6 @@ class ProducManager{
   }
 }
 
-
-
-//instancia de la clase
 
 const productManager = new ProducManager(ruta)
 module.exports = productManager

@@ -5,7 +5,7 @@ const Products = require('../models/Products.model')
 const privateAccess = require('../../middlewares/privateAccess.middleware')
 const router = Router()
 
-//POST crea un carrito vacio
+// crear un carrito
 router.post('/', async (req, res) => {
   try {
     const newCart = await Cart.create({})
@@ -17,7 +17,7 @@ router.post('/', async (req, res) => {
   }
 })
 
-// GET muestra un carrito en especifico
+// mostrar un carrito por id
 router.get('/:cid', privateAccess, async (req, res) => {
   try {
       const cart = await Cart.findById(req.params.cid).populate('productos.product');

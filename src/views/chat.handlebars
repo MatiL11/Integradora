@@ -10,41 +10,41 @@
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
-  const socket = io(); // establecer conexión con el servidor WebSocket
+  const socket = io(); 
 
-const messages = document.getElementById('messages'); // obtener el elemento donde se mostrarán los mensajes
-const messagesForm = document.getElementById('messagesForm'); // obtener el formulario de envío de mensajes
-const user = document.querySelector('input[name="user"]'); // obtener el campo de correo electrónico
-const message = document.querySelector('input[name="message"]'); // obtener el campo de mensaje
+const messages = document.getElementById('messages'); 
+const messagesForm = document.getElementById('messagesForm'); 
+const user = document.querySelector('input[name="user"]'); 
+const message = document.querySelector('input[name="message"]'); 
 
-// manejar el evento de mensaje recibido
+
 socket.on('new message', (data) => {
-  const li = document.createElement('li'); // crear un elemento de lista
-  li.innerHTML = `<strong>${data.user}</strong>: ${data.message}`; // agregar el mensaje al elemento de lista
-  messages.appendChild(li); // agregar el elemento de lista al contenedor de mensajes
+  const li = document.createElement('li');
+  li.innerHTML = `<strong>${data.user}</strong>: ${data.message}`; 
+  messages.appendChild(li); 
 });
 
-// manejar el evento de mensajes antiguos recibidos
+
 socket.on('old messages', (data) => {
   data.forEach((message) => {
-    const li = document.createElement('li'); // crear un elemento de lista
-    li.innerHTML = `<strong>${message.user}</strong>: ${message.message}`; // agregar el mensaje al elemento de lista
-    messages.appendChild(li); // agregar el elemento de lista al contenedor de mensajes
+    const li = document.createElement('li'); 
+    li.innerHTML = `<strong>${message.user}</strong>: ${message.message}`; 
+    messages.appendChild(li); 
   });
 });
 
-// manejar el envío de mensajes
+
 messagesForm.addEventListener('submit', (e) => {
-  e.preventDefault(); // evitar que se recargue la página
+  e.preventDefault(); 
 
   const data = {
-    user: user.value, // obtener el correo electrónico del usuario
-    message: message.value // obtener el mensaje del usuario
+    user: user.value, 
+    message: message.value 
   };
 
-  socket.emit('send message', data); // enviar el mensaje al servidor WebSocket
+  socket.emit('send message', data); 
 
-  message.value = ''; // limpiar el campo de mensaje
-  message.focus(); // poner el cursor en el campo de mensaje
+  message.value = ''; 
+  message.focus(); 
 });
 </script>

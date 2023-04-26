@@ -1,6 +1,5 @@
 const socketIo = require('socket.io')
 const Message = require('../dao/models/Messages.model')
-const Cart = require('../dao/models/Carts.model')
 
 const initSocketServer = httpServer => {
   const io = socketIo(httpServer);

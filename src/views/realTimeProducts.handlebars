@@ -1,6 +1,5 @@
 <h2>Productos En Tiempo Real</h2>
 <div class="product-list">
-  {{!-- Funcion que itera el array de productos y renderiza una seccion de plantilla por cada producto--}}
   {{#each productos}}
     <div class="productItem">
       <h3>{{this.nombre}} <p>id: {{this.id}}</p></h3>
@@ -15,7 +14,6 @@
 <script>
   const socket = io()
 
-  //Agregar producto y actualizar productList
   socket.on('newProduct', products => {
     const productList = document.querySelector('.product-list');
     productList.innerHTML = '';
@@ -35,7 +33,7 @@
   socket.on('message', message => {
     console.log(message)
   })
-  //Eliminar producto y actualizar productList
+
   socket.on('deleteProduct', products => {
     const productList = document.querySelector('.product-list');
     productList.innerHTML = '';
