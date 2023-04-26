@@ -1,5 +1,4 @@
 const fs = require('fs')
-//decidi utilizar el metodo joi para validar los datos de los productos
 const Joi = require('joi')
 const ruta = 'src/data/Productos.json'
 

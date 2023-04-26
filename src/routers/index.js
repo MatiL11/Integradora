@@ -1,14 +1,14 @@
-const productsController = require('../dao/dbManager/controller.products')
-const cartController = require('../dao/dbManager/controller.carts')
-const messageController = require('../dao/dbManager/controller.messages')
-const userController = require('../dao/dbManager/controller.users')
-const authController = require('../dao/dbManager/controller.auth')
+const productsController = require('../dao/dbControllers/controller.products')
+const cartController = require('../dao/dbControllers/controller.carts')
+const messageController = require('../dao/dbControllers/controller.messages')
+const userController = require('../dao/dbControllers/controller.users')
+const authController = require('../dao/dbControllers/controller.auth')
 
 const router = app => {
   app.use('/api/register', userController)
   app.use('/api/login', authController)
-  app.use('/api/dbProducts', productsController)
-  app.use('/api/dbCarts', cartController)
+  app.use('/api/products', productsController)
+  app.use('/api/carts', cartController) 
   app.use('/api/messages', messageController)
 }
 

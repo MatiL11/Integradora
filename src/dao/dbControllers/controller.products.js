@@ -2,7 +2,6 @@ const { Router } = require('express')
 const Products = require('../models/Products.model')
 const Cart = require('../models/Carts.model')
 const uploader = require('../../utils/multer.utils')
-const mongoosePaginate = require('mongoose-paginate-v2')
 const router = Router()
 const privateAccess = require('../../middlewares/privateAccess.middleware')
 
@@ -102,7 +101,8 @@ router.put('/:productId', async (req, res) => {
 router.delete('/:productId', async (req, res) => {
   try {
     const deletedProduct = await Products.findByIdAndDelete(req.params.productId)
-    res.json({message: `Product with ID ${req.params.productId} has been deleted`})
+
+    res.json({message: `Product ${deletedProduct} with ID ${req.params.productId} has been deleted`})
   } catch (error) {
     console.log(error)
     res.status(500).json({error: 'Error deleting product'})
