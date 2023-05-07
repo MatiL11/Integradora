@@ -1,114 +1,68 @@
-const { Router } = require('express')
-const Products = require('../models/Products.model')
-const Cart = require('../models/Carts.model')
-const uploader = require('../../utils/multer.utils')
-const router = Router()
-const privateAccess = require('../../middlewares/privateAccess.middleware')
+const { Router } = require("express");
+const Products = require("../models/Products.model");
+const Cart = require("../models/Carts.model");
+const uploader = require("../../utils/multer.utils");
+const router = Router();
+const privateAccess = require("../../middlewares/privateAccess.middleware");
+const buscarProducto = require("../products.dao");
 
-
-router.get('/', privateAccess, async (req, res) => {
-  const limit = parseInt(req.query.limit) || 10;
-  const page = parseInt(req.query.page) || 1;
-  const sort = req.query.sort === 'asc' ? 'price' : req.query.sort === 'desc' ? '-price' : null;
-  const query = req.query.query? {$and: [{$or: [
-              { name: { $regex: new RegExp(req.query.query, 'i') } },
-              { description: { $regex: new RegExp(req.query.query, 'i') } },
-            ],
-          },{category: {
-              $regex: req.query.category || '',
-              $options: 'i',
-            },
-          },
-        ],
-      }
-    : { category: { $regex: req.query.category || '', $options: 'i' } };
-
-
+router.get("/", privateAccess, async (req, res) => {
   try {
-    // buscar productos y paginarlos
-    const products = await Products.paginate(query, {
-      limit: limit,
-      page: page,
-      sort: sort,
-    });
-    const totalPages = products.totalPages;
-    const prevPage = products.prevPage;
-    const nextPage = products.nextPage;
-    const currentPage = products.page;
-    const hasPrevPage = products.hasPrevPage;
-    const hasNextPage = products.hasNextPage;
-    const prevLink = hasPrevPage
-      ? `http://${req.headers.host}/api/dbProducts?page=${prevPage}&limit=${limit}&sort=${sort}&query=${query}`
-      : null;
-    const nextLink = hasNextPage
-      ? `http://${req.headers.host}/api/dbProducts?page=${nextPage}&limit=${limit}&sort=${sort}&query=${query}`
-      : null;
-
-    // verificar si el usuario está logueado
     const user = req.session.user;
     const message = user
       ? `Bienvenido ${user.role} ${user.first_name} ${user.last_name}!`
       : null;
-
-    // buscar su carrito de compras
     const cart = await Cart.findOne({ userId: user._id });
-    const cartId = cart._id.toString()
-
-    //renderizar la vista
-    res.render('products.handlebars', {
-      title: 'Lista de Productos',
-      cartId: cartId,
-      products: products.docs,
-      totalPages: totalPages,
-      prevPage: prevPage,
-      nextPage: nextPage,
-      page: currentPage,
-      hasPrevPage: hasPrevPage,
-      hasNextPage: hasNextPage,
-      prevLink: prevLink,
-      nextLink: nextLink,
-      message: message,
-      allowProtoPropertiesByDefault: true,
-      allowProtoMethodsByDefault: true,
-    });
-  } catch (err) {
+    const cartId = cart._id.toString();
+    const products = await buscarProducto(req, message, cartId);
+    res.render("products.handlebars", products);
+  } catch (error) {
     res.status(500).json({
-      status: 'error',
+      status: "error",
       message: err.message,
     });
   }
 });
 
-router.post('/', uploader.single('file'), async (req, res) => {
+router.post("/", uploader.single("file"), async (req, res) => {
   try {
-    const newProduct = await Products.create(req.body)
-    res.json({message: newProduct})
+    const newProduct = await Products.create(req.body);
+    res.json({ message: newProduct });
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-})
+});
 
-router.put('/:productId', async (req, res) => {
+router.put("/:productId", async (req, res) => {
   try {
-    const updatedProduct = await Products.findByIdAndUpdate(req.params.productId, req.body, { new: true })
-    res.json({ message: 'Product updated successfully', product: updatedProduct })
+    const updatedProduct = await Products.findByIdAndUpdate(
+      req.params.productId,
+      req.body,
+      { new: true }
+    );
+    res.json({
+      message: "Producto actualizado",
+      product: updatedProduct,
+    });
   } catch (error) {
-    console.log(error)
-    res.status(500).json({ error: 'Error updating product' })
+    console.log(error);
+    res.status(500).json({ error: "Error actualizando el producto" });
   }
-})
+});
 
-router.delete('/:productId', async (req, res) => {
+router.delete("/:productId", async (req, res) => {
   try {
-    const deletedProduct = await Products.findByIdAndDelete(req.params.productId)
+    const deletedProduct = await Products.findByIdAndDelete(
+      req.params.productId
+    );
 
-    res.json({message: `Product ${deletedProduct} with ID ${req.params.productId} has been deleted`})
+    res.json({
+      message: `El producto ${deletedProduct} con id ${req.params.productId} fue eliminado`,
+    });
   } catch (error) {
-    console.log(error)
-    res.status(500).json({error: 'Error deleting product'})
+    console.log(error);
+    res.status(500).json({ error: "Error eliminando el producto" });
   }
-})
+});
 
-
-
-module.exports = router
+module.exports = router;
